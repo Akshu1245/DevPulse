@@ -28,7 +28,20 @@ logger = logging.getLogger(__name__)
 # ── Connection URL ───────────────────────────────────────────────────────────
 # Production:  postgresql+asyncpg://user:pass@host:5432/devpulse
 # Development: sqlite+aiosqlite:///devpulse.db  (auto-fallback)
-DATABASE_URL: str = os.getenv("DATABASE_URL", "").strip() or "sqlite+aiosqlite:///devpulse.db"
+_raw_url: str = os.getenv("DATABASE_URL", "").strip()
+
+# Replit provides a plain postgresql:// URL; rewrite it to use the async driver
+if _raw_url.startswith("postgresql://") or _raw_url.startswith("postgres://"):
+    _raw_url = _raw_url.replace("postgresql://", "postgresql+asyncpg://", 1).replace("postgres://", "postgresql+asyncpg://", 1)
+
+# asyncpg does not accept sslmode as a query parameter — strip it and handle via connect_args
+import re as _re
+_ssl_match = _re.search(r'[?&]sslmode=([^&]+)', _raw_url)
+_ssl_mode = _ssl_match.group(1) if _ssl_match else None
+if _ssl_mode:
+    _raw_url = _re.sub(r'[?&]sslmode=[^&]+', '', _raw_url).rstrip('?').rstrip('&')
+
+DATABASE_URL: str = _raw_url or "sqlite+aiosqlite:///devpulse.db"
 
 # ── Detect driver ────────────────────────────────────────────────────────────
 IS_POSTGRES: bool = DATABASE_URL.startswith("postgresql")
@@ -48,6 +61,9 @@ if IS_POSTGRES:
         pool_recycle=int(os.getenv("DB_POOL_RECYCLE", "1800")),
         pool_pre_ping=True,
     )
+    # Pass ssl=False when sslmode=disable was present in the original URL
+    if _ssl_mode == "disable":
+        _engine_kwargs["connect_args"] = {"ssl": False}
 
 # ── Engine & Session Factory ────────────────────────────────────────────────
 engine: AsyncEngine = create_async_engine(DATABASE_URL, **_engine_kwargs)

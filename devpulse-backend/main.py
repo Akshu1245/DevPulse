@@ -192,18 +192,17 @@ app.add_middleware(RateLimitMiddleware)
 # Build the list of allowed origins
 allowed_origins = [
     "http://localhost:3000",
-    "http://localhost:3001",
-    os.getenv("FRONTEND_URL", "http://localhost:3000"),
+    "http://localhost:5000",
+    os.getenv("FRONTEND_URL", "http://localhost:5000"),
 ]
 
-# Add Vercel preview/production URLs when running on Vercel
-vercel_url = os.getenv("VERCEL_URL")
-if vercel_url:
-    allowed_origins.append(f"https://{vercel_url}")
-
-vercel_project_url = os.getenv("VERCEL_PROJECT_PRODUCTION_URL")
-if vercel_project_url:
-    allowed_origins.append(f"https://{vercel_project_url}")
+# Add Replit domain when running on Replit
+replit_domains = os.getenv("REPLIT_DOMAINS", "")
+for domain in replit_domains.split(","):
+    domain = domain.strip()
+    if domain:
+        allowed_origins.append(f"https://{domain}")
+        allowed_origins.append(f"http://{domain}")
 
 # Add CORS middleware
 app.add_middleware(
