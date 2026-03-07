@@ -2,6 +2,10 @@
 .git
 .gitignore
 
+# Exclude root and backend requirements - only api/requirements.txt is used by Vercel
+/requirements.txt
+/devpulse-backend/requirements.txt
+
 # Python
 __pycache__
 *.py[cod]
