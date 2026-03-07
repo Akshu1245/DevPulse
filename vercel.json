@@ -3,7 +3,8 @@
   "outputDirectory": "devpulse-dashboard-ui/.next",
   "installCommand": "npm install",
   "functions": {
-    "api/index.py": {
+    "api/**/*.py": {
+      "runtime": "@vercel/python@4.5.0",
       "maxDuration": 30
     }
   },
