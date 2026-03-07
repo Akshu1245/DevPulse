@@ -22,7 +22,7 @@ Real-time API monitoring, AI-powered code generation, and compatibility analysis
 ### Prerequisites
 
 - Node.js 18+ 
-- DevPulse Backend running on port 8000
+- DevPulse Backend running on port 8001
 
 ### Installation
 
@@ -30,8 +30,9 @@ Real-time API monitoring, AI-powered code generation, and compatibility analysis
 # Install dependencies
 npm install
 
-# Configure environment (optional - defaults to localhost:8000)
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+# Configure environment
+# (frontend will call /api on the same host; Next rewrites proxy to BACKEND_URL)
+cp .env.example .env.local
 
 # Start development server
 npm run dev
@@ -39,11 +40,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
+### One-host local setup
+
+- Frontend runs on `http://localhost:3000`
+- Backend runs on `http://localhost:8001`
+- Browser calls only `http://localhost:3000/api/...`
+- Next.js rewrites proxy those calls to `BACKEND_URL` (default `http://localhost:8001`)
+
 ## Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://localhost:8000` |
+| `NEXT_PUBLIC_API_URL` | Public API base URL (leave empty for same-host mode) | `""` |
+| `BACKEND_URL` | Server-side proxy target for rewrites | `http://localhost:8001` |
 
 ## Project Structure
 
@@ -87,5 +96,12 @@ npm run lint    # Lint code
 ```bash
 npx vercel
 ```
+
+Set these Vercel environment variables:
+
+- `NEXT_PUBLIC_API_URL=` (empty, for one-host mode)
+- `BACKEND_URL=https://<your-backend-domain>`
+
+This keeps your frontend and API under one Vercel host URL from the browser perspective.
 
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

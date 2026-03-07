@@ -1,11 +1,28 @@
 import type { NextConfig } from "next";
 
+const backendUrl = (process.env.BACKEND_URL || 'http://localhost:8001').replace(/\/$/, '');
+
 const nextConfig: NextConfig = {
   output: 'standalone',
   async rewrites() {
-    return process.env.NODE_ENV === 'development'
-      ? [{ source: '/api/:path*', destination: 'http://localhost:8000/api/:path*' }]
-      : [];
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+      {
+        source: '/health',
+        destination: `${backendUrl}/health`,
+      },
+      {
+        source: '/openapi.json',
+        destination: `${backendUrl}/openapi.json`,
+      },
+      {
+        source: '/backend-docs',
+        destination: `${backendUrl}/docs`,
+      },
+    ];
   },
 };
 
