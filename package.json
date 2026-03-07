@@ -1,0 +1,17 @@
+{
+  "name": "devpulse-monorepo",
+  "version": "4.0.0",
+  "private": true,
+  "workspaces": [
+    "devpulse-dashboard-ui"
+  ],
+  "scripts": {
+    "build": "cd devpulse-dashboard-ui && npm run build",
+    "dev": "cd devpulse-dashboard-ui && npm run dev",
+    "start": "cd devpulse-dashboard-ui && npm start"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

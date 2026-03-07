@@ -196,6 +196,14 @@ allowed_origins = [
     os.getenv("FRONTEND_URL", "http://localhost:5000"),
 ]
 
+# Add Vercel deployment URLs (auto-set by Vercel)
+vercel_url = os.getenv("VERCEL_URL")
+vercel_prod_url = os.getenv("VERCEL_PROJECT_PRODUCTION_URL")
+if vercel_url:
+    allowed_origins.append(f"https://{vercel_url}")
+if vercel_prod_url:
+    allowed_origins.append(f"https://{vercel_prod_url}")
+
 # Add Replit domain when running on Replit
 replit_domains = os.getenv("REPLIT_DOMAINS", "")
 for domain in replit_domains.split(","):
