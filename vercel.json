@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "functions": {
     "api/index.py": {
-      "runtime": "python3.12",
+      "runtime": "@vercel/python@4.5.0",
       "maxDuration": 30
     }
   },
