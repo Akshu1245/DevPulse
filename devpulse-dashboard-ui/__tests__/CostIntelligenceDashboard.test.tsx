@@ -10,6 +10,6 @@ describe('CostIntelligenceDashboard', () => {
 
   it('displays provider breakdown section', () => {
     render(<CostIntelligenceDashboard />);
-    expect(screen.getByText(/Provider|Breakdown|Cost/i)).toBeTruthy();
+    expect(screen.getAllByText(/Provider|Breakdown|Cost/i).length).toBeGreaterThan(0);
   });
 });
