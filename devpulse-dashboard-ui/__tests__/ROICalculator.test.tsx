@@ -5,7 +5,7 @@ import ROICalculator from '../src/components/ROICalculator';
 describe('ROICalculator', () => {
   it('renders ROI calculator heading', () => {
     render(<ROICalculator />);
-    expect(screen.getByText(/ROI/i)).toBeTruthy();
+    expect(screen.getAllByText(/ROI/i).length).toBeGreaterThan(0);
   });
 
   it('has input fields for cost and team size', () => {
